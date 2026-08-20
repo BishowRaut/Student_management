@@ -31,24 +31,43 @@ DEBUG = os.environ.get(
 
 
 # =========================================================
+# VERCEL
+# =========================================================
+
+VERCEL_URL = os.environ.get("VERCEL_URL")
+
+CUSTOM_DOMAIN = os.environ.get("CUSTOM_DOMAIN")
+
+
+# =========================================================
 # ALLOWED HOSTS
+# =========================================================
+#
+# Django uses this to decide which Host headers are allowed.
+# ".vercel.app" allows your Vercel deployment subdomains.
+#
+# Example:
+# student-management-three-alpha.vercel.app
+#
 # =========================================================
 
 ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get(
-        "ALLOWED_HOSTS",
-        "localhost,127.0.0.1",
-    ).split(",")
-    if host.strip()
+    "localhost",
+    "127.0.0.1",
+    ".vercel.app",
 ]
 
 
-# Vercel automatically provides the deployment hostname.
-VERCEL_URL = os.environ.get("VERCEL_URL")
+# Add the Vercel deployment hostname if available.
 
 if VERCEL_URL:
     ALLOWED_HOSTS.append(VERCEL_URL)
+
+
+# Add custom domain if configured.
+
+if CUSTOM_DOMAIN:
+    ALLOWED_HOSTS.append(CUSTOM_DOMAIN)
 
 
 # =========================================================
@@ -57,7 +76,7 @@ if VERCEL_URL:
 
 INSTALLED_APPS = [
 
-    # Django
+    # Django applications
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -129,6 +148,7 @@ TEMPLATES = [
 
         },
     },
+
 ]
 
 
@@ -153,9 +173,13 @@ if DATABASE_URL:
     DATABASES = {
 
         "default": dj_database_url.parse(
+
             DATABASE_URL,
+
             conn_max_age=600,
+
             conn_health_checks=True,
+
         )
 
     }
@@ -231,7 +255,6 @@ STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-
 STATICFILES_DIRS = [
 
     BASE_DIR / "static",
@@ -267,6 +290,31 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # =========================================================
+# CSRF TRUSTED ORIGINS
+# =========================================================
+
+CSRF_TRUSTED_ORIGINS = []
+
+
+# Vercel deployment domain
+
+if VERCEL_URL:
+
+    CSRF_TRUSTED_ORIGINS.append(
+        f"https://{VERCEL_URL}"
+    )
+
+
+# Custom production domain
+
+if CUSTOM_DOMAIN:
+
+    CSRF_TRUSTED_ORIGINS.append(
+        f"https://{CUSTOM_DOMAIN}"
+    )
+
+
+# =========================================================
 # PRODUCTION SECURITY
 # =========================================================
 
@@ -281,32 +329,6 @@ if not DEBUG:
 
     CSRF_COOKIE_SECURE = True
 
-    SECURE_BROWSER_XSS_FILTER = True
-
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
     X_FRAME_OPTIONS = "DENY"
-
-
-# =========================================================
-# CSRF / VERCEL
-# =========================================================
-
-CSRF_TRUSTED_ORIGINS = []
-
-
-if VERCEL_URL:
-
-    CSRF_TRUSTED_ORIGINS.append(
-        f"https://{VERCEL_URL}"
-    )
-
-
-# Optional custom production domain
-CUSTOM_DOMAIN = os.environ.get("CUSTOM_DOMAIN")
-
-if CUSTOM_DOMAIN:
-
-    CSRF_TRUSTED_ORIGINS.append(
-        f"https://{CUSTOM_DOMAIN}"
-    )
