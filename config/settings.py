@@ -48,7 +48,6 @@ ALLOWED_HOSTS = [
     ".vercel.app",
 ]
 
-# Add Vercel deployment hostname
 if VERCEL_URL:
     VERCEL_HOST = (
         VERCEL_URL
@@ -60,8 +59,6 @@ if VERCEL_URL:
     if VERCEL_HOST not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(VERCEL_HOST)
 
-
-# Add custom domain
 if CUSTOM_DOMAIN:
     CUSTOM_HOST = (
         CUSTOM_DOMAIN
@@ -79,7 +76,7 @@ if CUSTOM_DOMAIN:
 # =========================================================
 
 INSTALLED_APPS = [
-    # Django applications
+    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -150,11 +147,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 # DATABASE
 # =========================================================
 #
-# LOCAL:
+# LOCAL DEVELOPMENT:
 #     SQLite
 #
-# VERCEL:
-#     PostgreSQL using DATABASE_URL
+# VERCEL PRODUCTION:
+#     PostgreSQL / Neon
 #
 # =========================================================
 
@@ -162,13 +159,16 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
 if VERCEL_URL:
+
     # -----------------------------------------------------
-    # PRODUCTION: VERCEL
+    # VERCEL PRODUCTION
     # -----------------------------------------------------
 
     if not DATABASE_URL:
         raise RuntimeError(
-            "DATABASE_URL is not configured in Vercel Environment Variables."
+            "DATABASE_URL is missing. "
+            "Add your Neon PostgreSQL connection string "
+            "to Vercel Environment Variables."
         )
 
     import dj_database_url
@@ -182,6 +182,7 @@ if VERCEL_URL:
     }
 
 else:
+
     # -----------------------------------------------------
     # LOCAL DEVELOPMENT
     # -----------------------------------------------------
@@ -287,7 +288,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://student-management-three-alpha.vercel.app",
 ]
 
-# Add Vercel deployment URL
+
 if VERCEL_URL:
 
     VERCEL_ORIGIN = VERCEL_URL
@@ -306,7 +307,6 @@ if VERCEL_URL:
         )
 
 
-# Add custom domain
 if CUSTOM_DOMAIN:
 
     CUSTOM_ORIGIN = CUSTOM_DOMAIN
