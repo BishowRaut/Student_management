@@ -50,31 +50,31 @@ ALLOWED_HOSTS = [
 ]
 
 
-# Add Vercel hostname if Vercel provides it
+# Add Vercel deployment hostname if available
 
 if VERCEL_URL:
-    VERCEL_HOST = VERCEL_URL.replace(
-        "https://",
-        ""
-    ).replace(
-        "http://",
-        ""
-    ).rstrip("/")
+
+    VERCEL_HOST = (
+        VERCEL_URL
+        .replace("https://", "")
+        .replace("http://", "")
+        .rstrip("/")
+    )
 
     if VERCEL_HOST not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(VERCEL_HOST)
 
 
-# Add custom domain if configured
+# Add custom domain if available
 
 if CUSTOM_DOMAIN:
-    CUSTOM_HOST = CUSTOM_DOMAIN.replace(
-        "https://",
-        ""
-    ).replace(
-        "http://",
-        ""
-    ).rstrip("/")
+
+    CUSTOM_HOST = (
+        CUSTOM_DOMAIN
+        .replace("https://", "")
+        .replace("http://", "")
+        .rstrip("/")
+    )
 
     if CUSTOM_HOST not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(CUSTOM_HOST)
@@ -86,7 +86,7 @@ if CUSTOM_DOMAIN:
 
 INSTALLED_APPS = [
 
-    # Django applications
+    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -94,7 +94,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Project applications
+    # Student Management System
     "studentapp",
 ]
 
@@ -312,28 +312,38 @@ if VERCEL_URL:
 
     VERCEL_ORIGIN = VERCEL_URL
 
-    if not VERCEL_ORIGIN.startswith("http://") and not VERCEL_ORIGIN.startswith("https://"):
+    if not (
+        VERCEL_ORIGIN.startswith("http://")
+        or VERCEL_ORIGIN.startswith("https://")
+    ):
         VERCEL_ORIGIN = f"https://{VERCEL_ORIGIN}"
 
     VERCEL_ORIGIN = VERCEL_ORIGIN.rstrip("/")
 
     if VERCEL_ORIGIN not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(VERCEL_ORIGIN)
+        CSRF_TRUSTED_ORIGINS.append(
+            VERCEL_ORIGIN
+        )
 
 
-# Add custom domain if configured
+# Add custom domain if available
 
 if CUSTOM_DOMAIN:
 
     CUSTOM_ORIGIN = CUSTOM_DOMAIN
 
-    if not CUSTOM_ORIGIN.startswith("http://") and not CUSTOM_ORIGIN.startswith("https://"):
+    if not (
+        CUSTOM_ORIGIN.startswith("http://")
+        or CUSTOM_ORIGIN.startswith("https://")
+    ):
         CUSTOM_ORIGIN = f"https://{CUSTOM_ORIGIN}"
 
     CUSTOM_ORIGIN = CUSTOM_ORIGIN.rstrip("/")
 
     if CUSTOM_ORIGIN not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(CUSTOM_ORIGIN)
+        CSRF_TRUSTED_ORIGINS.append(
+            CUSTOM_ORIGIN
+        )
 
 
 # =========================================================
