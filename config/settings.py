@@ -24,18 +24,17 @@ SECRET_KEY = os.environ.get(
     "django-insecure-development-only-change-this-key",
 )
 
-DEBUG = os.environ.get(
-    "DEBUG",
-    "False",
-).lower() == "true"
+DEBUG = (
+    os.environ.get("DEBUG", "False").lower() == "true"
+)
 
 
 # =========================================================
 # VERCEL / CUSTOM DOMAIN
 # =========================================================
 
-VERCEL_URL = os.environ.get("VERCEL_URL")
-CUSTOM_DOMAIN = os.environ.get("CUSTOM_DOMAIN")
+VERCEL_URL = os.environ.get("VERCEL_URL", "")
+CUSTOM_DOMAIN = os.environ.get("CUSTOM_DOMAIN", "")
 
 
 # =========================================================
@@ -49,26 +48,27 @@ ALLOWED_HOSTS = [
 ]
 
 if VERCEL_URL:
-    VERCEL_HOST = (
+    vercel_host = (
         VERCEL_URL
         .replace("https://", "")
         .replace("http://", "")
         .rstrip("/")
     )
 
-    if VERCEL_HOST not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(VERCEL_HOST)
+    if vercel_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(vercel_host)
+
 
 if CUSTOM_DOMAIN:
-    CUSTOM_HOST = (
+    custom_host = (
         CUSTOM_DOMAIN
         .replace("https://", "")
         .replace("http://", "")
         .rstrip("/")
     )
 
-    if CUSTOM_HOST not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(CUSTOM_HOST)
+    if custom_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(custom_host)
 
 
 # =========================================================
@@ -76,7 +76,6 @@ if CUSTOM_DOMAIN:
 # =========================================================
 
 INSTALLED_APPS = [
-    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -84,7 +83,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Student Management System
     "studentapp",
 ]
 
@@ -95,11 +93,17 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+
     "django.contrib.sessions.middleware.SessionMiddleware",
+
     "django.middleware.common.CommonMiddleware",
+
     "django.middleware.csrf.CsrfViewMiddleware",
+
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+
     "django.contrib.messages.middleware.MessageMiddleware",
+
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -117,7 +121,10 @@ ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "BACKEND": (
+            "django.template.backends.django."
+            "DjangoTemplates"
+        ),
 
         "DIRS": [
             BASE_DIR / "templates",
@@ -127,9 +134,20 @@ TEMPLATES = [
 
         "OPTIONS": {
             "context_processors": [
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+                (
+                    "django.template.context_processors."
+                    "request"
+                ),
+
+                (
+                    "django.contrib.auth."
+                    "context_processors.auth"
+                ),
+
+                (
+                    "django.contrib.messages."
+                    "context_processors.messages"
+                ),
             ],
         },
     },
@@ -147,29 +165,22 @@ WSGI_APPLICATION = "config.wsgi.application"
 # DATABASE
 # =========================================================
 #
-# LOCAL DEVELOPMENT:
-#     SQLite
+# If DATABASE_URL exists:
+#     Use PostgreSQL / Neon
 #
-# VERCEL PRODUCTION:
-#     PostgreSQL / Neon
+# If DATABASE_URL does not exist:
+#     Use SQLite locally
 #
 # =========================================================
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
-if VERCEL_URL:
+if DATABASE_URL:
 
     # -----------------------------------------------------
-    # VERCEL PRODUCTION
+    # POSTGRESQL / NEON
     # -----------------------------------------------------
-
-    if not DATABASE_URL:
-        raise RuntimeError(
-            "DATABASE_URL is missing. "
-            "Add your Neon PostgreSQL connection string "
-            "to Vercel Environment Variables."
-        )
 
     import dj_database_url
 
@@ -184,7 +195,7 @@ if VERCEL_URL:
 else:
 
     # -----------------------------------------------------
-    # LOCAL DEVELOPMENT
+    # LOCAL SQLITE
     # -----------------------------------------------------
 
     DATABASES = {
@@ -206,18 +217,21 @@ AUTH_PASSWORD_VALIDATORS = [
             "UserAttributeSimilarityValidator"
         ),
     },
+
     {
         "NAME": (
             "django.contrib.auth.password_validation."
             "MinimumLengthValidator"
         ),
     },
+
     {
         "NAME": (
             "django.contrib.auth.password_validation."
             "CommonPasswordValidator"
         ),
     },
+
     {
         "NAME": (
             "django.contrib.auth.password_validation."
@@ -291,37 +305,41 @@ CSRF_TRUSTED_ORIGINS = [
 
 if VERCEL_URL:
 
-    VERCEL_ORIGIN = VERCEL_URL
+    vercel_origin = VERCEL_URL.strip()
 
     if not (
-        VERCEL_ORIGIN.startswith("http://")
-        or VERCEL_ORIGIN.startswith("https://")
+        vercel_origin.startswith("http://")
+        or vercel_origin.startswith("https://")
     ):
-        VERCEL_ORIGIN = f"https://{VERCEL_ORIGIN}"
+        vercel_origin = (
+            f"https://{vercel_origin}"
+        )
 
-    VERCEL_ORIGIN = VERCEL_ORIGIN.rstrip("/")
+    vercel_origin = vercel_origin.rstrip("/")
 
-    if VERCEL_ORIGIN not in CSRF_TRUSTED_ORIGINS:
+    if vercel_origin not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(
-            VERCEL_ORIGIN
+            vercel_origin
         )
 
 
 if CUSTOM_DOMAIN:
 
-    CUSTOM_ORIGIN = CUSTOM_DOMAIN
+    custom_origin = CUSTOM_DOMAIN.strip()
 
     if not (
-        CUSTOM_ORIGIN.startswith("http://")
-        or CUSTOM_ORIGIN.startswith("https://")
+        custom_origin.startswith("http://")
+        or custom_origin.startswith("https://")
     ):
-        CUSTOM_ORIGIN = f"https://{CUSTOM_ORIGIN}"
+        custom_origin = (
+            f"https://{custom_origin}"
+        )
 
-    CUSTOM_ORIGIN = CUSTOM_ORIGIN.rstrip("/")
+    custom_origin = custom_origin.rstrip("/")
 
-    if CUSTOM_ORIGIN not in CSRF_TRUSTED_ORIGINS:
+    if custom_origin not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(
-            CUSTOM_ORIGIN
+            custom_origin
         )
 
 
