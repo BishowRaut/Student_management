@@ -45,15 +45,11 @@ CUSTOM_DOMAIN = os.environ.get("CUSTOM_DOMAIN")
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "student-management-three-alpha.vercel.app",
     ".vercel.app",
 ]
 
-
-# Add Vercel deployment hostname if available
-
+# Add Vercel deployment hostname
 if VERCEL_URL:
-
     VERCEL_HOST = (
         VERCEL_URL
         .replace("https://", "")
@@ -65,10 +61,8 @@ if VERCEL_URL:
         ALLOWED_HOSTS.append(VERCEL_HOST)
 
 
-# Add custom domain if available
-
+# Add custom domain
 if CUSTOM_DOMAIN:
-
     CUSTOM_HOST = (
         CUSTOM_DOMAIN
         .replace("https://", "")
@@ -85,8 +79,7 @@ if CUSTOM_DOMAIN:
 # =========================================================
 
 INSTALLED_APPS = [
-
-    # Django
+    # Django applications
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -104,19 +97,12 @@ INSTALLED_APPS = [
 # =========================================================
 
 MIDDLEWARE = [
-
     "django.middleware.security.SecurityMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
-
     "django.middleware.common.CommonMiddleware",
-
     "django.middleware.csrf.CsrfViewMiddleware",
-
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-
     "django.contrib.messages.middleware.MessageMiddleware",
-
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -133,10 +119,8 @@ ROOT_URLCONF = "config.urls"
 # =========================================================
 
 TEMPLATES = [
-
     {
-        "BACKEND":
-            "django.template.backends.django.DjangoTemplates",
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
 
         "DIRS": [
             BASE_DIR / "templates",
@@ -145,20 +129,13 @@ TEMPLATES = [
         "APP_DIRS": True,
 
         "OPTIONS": {
-
             "context_processors": [
-
                 "django.template.context_processors.request",
-
                 "django.contrib.auth.context_processors.auth",
-
                 "django.contrib.messages.context_processors.messages",
-
             ],
-
         },
     },
-
 ]
 
 
@@ -172,42 +149,48 @@ WSGI_APPLICATION = "config.wsgi.application"
 # =========================================================
 # DATABASE
 # =========================================================
+#
+# LOCAL:
+#     SQLite
+#
+# VERCEL:
+#     PostgreSQL using DATABASE_URL
+#
+# =========================================================
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
-if DATABASE_URL:
+if VERCEL_URL:
+    # -----------------------------------------------------
+    # PRODUCTION: VERCEL
+    # -----------------------------------------------------
+
+    if not DATABASE_URL:
+        raise RuntimeError(
+            "DATABASE_URL is not configured in Vercel Environment Variables."
+        )
 
     import dj_database_url
 
     DATABASES = {
-
         "default": dj_database_url.parse(
-
             DATABASE_URL,
-
             conn_max_age=600,
-
             conn_health_checks=True,
-
         )
-
     }
 
 else:
+    # -----------------------------------------------------
+    # LOCAL DEVELOPMENT
+    # -----------------------------------------------------
 
     DATABASES = {
-
         "default": {
-
-            "ENGINE":
-                "django.db.backends.sqlite3",
-
-            "NAME":
-                BASE_DIR / "db.sqlite3",
-
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
         }
-
     }
 
 
@@ -216,31 +199,30 @@ else:
 # =========================================================
 
 AUTH_PASSWORD_VALIDATORS = [
-
     {
-        "NAME":
+        "NAME": (
             "django.contrib.auth.password_validation."
-            "UserAttributeSimilarityValidator",
+            "UserAttributeSimilarityValidator"
+        ),
     },
-
     {
-        "NAME":
+        "NAME": (
             "django.contrib.auth.password_validation."
-            "MinimumLengthValidator",
+            "MinimumLengthValidator"
+        ),
     },
-
     {
-        "NAME":
+        "NAME": (
             "django.contrib.auth.password_validation."
-            "CommonPasswordValidator",
+            "CommonPasswordValidator"
+        ),
     },
-
     {
-        "NAME":
+        "NAME": (
             "django.contrib.auth.password_validation."
-            "NumericPasswordValidator",
+            "NumericPasswordValidator"
+        ),
     },
-
 ]
 
 
@@ -305,9 +287,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://student-management-three-alpha.vercel.app",
 ]
 
-
-# Add Vercel origin if available
-
+# Add Vercel deployment URL
 if VERCEL_URL:
 
     VERCEL_ORIGIN = VERCEL_URL
@@ -326,8 +306,7 @@ if VERCEL_URL:
         )
 
 
-# Add custom domain if available
-
+# Add custom domain
 if CUSTOM_DOMAIN:
 
     CUSTOM_ORIGIN = CUSTOM_DOMAIN
