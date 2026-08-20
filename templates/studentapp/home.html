@@ -9,25 +9,33 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>
-        {% block title %}
-        Student Management System
-        {% endblock %}
-    </title>
+    <title>Home | Student Management System</title>
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
 
 </head>
 
+
 <body>
 
-    <!-- Navigation -->
+
+    <!-- ==============================
+         NAVIGATION BAR
+    =============================== -->
 
     <nav class="navbar">
 
-        <h2>
-            Student Management System
-        </h2>
+        <div class="logo">
+
+            <a href="{% url 'home' %}">
+                Student Management System
+            </a>
+
+        </div>
+
 
         <div class="nav-links">
 
@@ -43,69 +51,93 @@
                 Add Student
             </a>
 
-            <a href="/admin/">
-                Admin
-            </a>
+
+            {% if user.is_authenticated %}
+
+                <span class="welcome-user">
+                    Welcome, {{ user.username }}
+                </span>
+
+
+                <!-- Logout must use POST -->
+
+                <form
+                    method="POST"
+                    action="{% url 'logout' %}"
+                    class="logout-form"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="logout-btn"
+                    >
+                        Logout
+                    </button>
+
+                </form>
+
+            {% endif %}
 
         </div>
 
     </nav>
 
 
-    <!-- Main Content -->
 
-    <main class="container">
+    <!-- ==============================
+         MAIN CONTENT
+    =============================== -->
 
-        {% block content %}
+    <main class="home-container">
 
-        <div class="page-header">
 
-            <div>
+        <!-- Welcome Section -->
 
-                <h1>
-                    Welcome to Student Management System
-                </h1>
+        <section class="welcome-section">
+
+            <h1>
+                Welcome to Student Management System
+            </h1>
+
+            {% if user.is_authenticated %}
 
                 <p>
-                    Manage student records easily and efficiently.
+                    Hello, <strong>{{ user.username }}</strong>!
+                    Welcome back.
                 </p>
 
-            </div>
+            {% else %}
 
-            <a
-                href="{% url 'add_student' %}"
-                class="btn btn-primary"
-            >
-                + Add Student
-            </a>
+                <p>
+                    Please login to manage students.
+                </p>
 
-        </div>
+            {% endif %}
 
-
-        <div class="stats">
-
-            <h3>
-                Student Management
-            </h3>
-
-            <p>
-                Manage your student records from one place.
-            </p>
-
-        </div>
+        </section>
 
 
-        <div class="card">
 
-            <h2>
-                Welcome
-            </h2>
+        <!-- ==============================
+             DASHBOARD CARDS
+        =============================== -->
 
-            <p>
-                Use the navigation menu to manage students.
-            </p>
+        <section class="dashboard-cards">
 
-            <div class="form-actions">
+
+            <!-- Total Students -->
+
+            <div class="dashboard-card">
+
+                <h3>
+                    Total Students
+                </h3>
+
+                <p class="dashboard-number">
+                    {{ total_students|default:"0" }}
+                </p>
 
                 <a
                     href="{% url 'student_list' %}"
@@ -114,20 +146,107 @@
                     View Students
                 </a>
 
+            </div>
+
+
+            <!-- Add Student -->
+
+            <div class="dashboard-card">
+
+                <h3>
+                    Add Student
+                </h3>
+
+                <p>
+                    Add a new student to the system.
+                </p>
+
                 <a
                     href="{% url 'add_student' %}"
-                    class="btn btn-success"
+                    class="btn btn-primary"
                 >
                     Add Student
                 </a>
 
             </div>
 
-        </div>
 
-        {% endblock %}
+            <!-- Manage Students -->
+
+            <div class="dashboard-card">
+
+                <h3>
+                    Manage Students
+                </h3>
+
+                <p>
+                    View, edit, search, and delete student records.
+                </p>
+
+                <a
+                    href="{% url 'student_list' %}"
+                    class="btn btn-primary"
+                >
+                    Manage Students
+                </a>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ==============================
+             QUICK ACTIONS
+        =============================== -->
+
+        <section class="quick-actions">
+
+            <h2>
+                Quick Actions
+            </h2>
+
+
+            <div class="quick-action-buttons">
+
+                <a
+                    href="{% url 'student_list' %}"
+                    class="btn btn-primary"
+                >
+                    View Students
+                </a>
+
+
+                <a
+                    href="{% url 'add_student' %}"
+                    class="btn btn-primary"
+                >
+                    Add New Student
+                </a>
+
+            </div>
+
+        </section>
+
 
     </main>
+
+
+
+    <!-- ==============================
+         FOOTER
+    =============================== -->
+
+    <footer class="footer">
+
+        <p>
+            &copy; 2026 Student Management System.
+            All rights reserved.
+        </p>
+
+    </footer>
+
 
 </body>
 

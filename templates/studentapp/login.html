@@ -1,0 +1,195 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Student Management System</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ==============================
+         NAVBAR
+    =============================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <a href="#">
+                Student Management System
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ==============================
+         LOGIN PAGE
+    =============================== -->
+
+    <main class="auth-page">
+
+        <div class="auth-card">
+
+
+            <!-- Header -->
+
+            <div class="auth-header">
+
+                <div class="auth-icon">
+                    🙎
+                </div>
+
+                <h1>
+                    Welcome 🙏
+                </h1>
+
+                <p>
+                    Login to your Student Management System
+                </p>
+
+            </div>
+
+
+
+            <!-- Login Error -->
+
+            {% if form.errors %}
+
+                <div class="auth-error">
+
+                    <strong>Login failed.</strong>
+
+                    <br>
+
+                    Please check your username and password.
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- Login Form -->
+
+            <form
+                method="POST"
+                class="auth-form"
+            >
+
+                {% csrf_token %}
+
+
+                <!-- Username -->
+
+                <div class="form-group">
+
+                    <label for="id_username">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        id="id_username"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- Password -->
+
+                <div class="form-group">
+
+                    <label for="id_password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- Login Button -->
+
+                <button
+                    type="submit"
+                    class="auth-submit"
+                >
+                    Login
+                </button>
+
+            </form>
+
+
+
+            <!-- Register -->
+
+            <div class="auth-footer">
+
+                <p>
+                    Don't have an account?
+                </p>
+
+                <a
+                    href="{% url 'register' %}"
+                    class="register-btn"
+                >
+                    Create Account
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ==============================
+         FOOTER
+    =============================== -->
+
+    <footer class="footer">
+
+        <p>
+            &copy; 2026 Student Management System.
+            All rights reserved.
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>
