@@ -36,8 +36,15 @@ DEBUG = os.environ.get(
 # VERCEL / CUSTOM DOMAIN
 # =========================================================
 
-VERCEL_URL = os.environ.get("VERCEL_URL", "")
-CUSTOM_DOMAIN = os.environ.get("CUSTOM_DOMAIN", "")
+VERCEL_URL = os.environ.get(
+    "VERCEL_URL",
+    "",
+).strip()
+
+CUSTOM_DOMAIN = os.environ.get(
+    "CUSTOM_DOMAIN",
+    "",
+).strip()
 
 
 # =========================================================
@@ -47,10 +54,18 @@ CUSTOM_DOMAIN = os.environ.get("CUSTOM_DOMAIN", "")
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+
+    # Current Vercel deployment
+    "student-management-three-alpha.vercel.app",
+
+    # Allow Vercel preview/deployment domains
     ".vercel.app",
 ]
 
+
+# Add Vercel URL if provided by environment
 if VERCEL_URL:
+
     vercel_host = (
         VERCEL_URL
         .replace("https://", "")
@@ -62,7 +77,9 @@ if VERCEL_URL:
         ALLOWED_HOSTS.append(vercel_host)
 
 
+# Add custom domain if provided
 if CUSTOM_DOMAIN:
+
     custom_host = (
         CUSTOM_DOMAIN
         .replace("https://", "")
@@ -79,7 +96,8 @@ if CUSTOM_DOMAIN:
 # =========================================================
 
 INSTALLED_APPS = [
-    # Django
+
+    # Django applications
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -97,6 +115,7 @@ INSTALLED_APPS = [
 # =========================================================
 
 MIDDLEWARE = [
+
     "django.middleware.security.SecurityMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -139,14 +158,17 @@ TEMPLATES = [
 
         "OPTIONS": {
             "context_processors": [
+
                 (
                     "django.template.context_processors."
                     "request"
                 ),
+
                 (
                     "django.contrib.auth."
                     "context_processors.auth"
                 ),
+
                 (
                     "django.contrib.messages."
                     "context_processors.messages"
@@ -169,9 +191,15 @@ WSGI_APPLICATION = "config.wsgi.application"
 # NEON POSTGRESQL
 # =========================================================
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL",
+    "",
+).strip()
 
+
+# Never use SQLite on Vercel.
 if not DATABASE_URL:
+
     raise RuntimeError(
         "DATABASE_URL is not configured. "
         "Add your Neon PostgreSQL connection string "
@@ -193,24 +221,28 @@ DATABASES = {
 # =========================================================
 
 AUTH_PASSWORD_VALIDATORS = [
+
     {
         "NAME": (
             "django.contrib.auth.password_validation."
             "UserAttributeSimilarityValidator"
         ),
     },
+
     {
         "NAME": (
             "django.contrib.auth.password_validation."
             "MinimumLengthValidator"
         ),
     },
+
     {
         "NAME": (
             "django.contrib.auth.password_validation."
             "CommonPasswordValidator"
         ),
     },
+
     {
         "NAME": (
             "django.contrib.auth.password_validation."
@@ -282,35 +314,45 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
+# Add Vercel environment URL
 if VERCEL_URL:
-    vercel_origin = VERCEL_URL.strip()
+
+    vercel_origin = VERCEL_URL
 
     if not (
         vercel_origin.startswith("http://")
         or vercel_origin.startswith("https://")
     ):
-        vercel_origin = f"https://{vercel_origin}"
+        vercel_origin = (
+            f"https://{vercel_origin}"
+        )
 
     vercel_origin = vercel_origin.rstrip("/")
 
     if vercel_origin not in CSRF_TRUSTED_ORIGINS:
+
         CSRF_TRUSTED_ORIGINS.append(
             vercel_origin
         )
 
 
+# Add custom domain
 if CUSTOM_DOMAIN:
-    custom_origin = CUSTOM_DOMAIN.strip()
+
+    custom_origin = CUSTOM_DOMAIN
 
     if not (
         custom_origin.startswith("http://")
         or custom_origin.startswith("https://")
     ):
-        custom_origin = f"https://{custom_origin}"
+        custom_origin = (
+            f"https://{custom_origin}"
+        )
 
     custom_origin = custom_origin.rstrip("/")
 
     if custom_origin not in CSRF_TRUSTED_ORIGINS:
+
         CSRF_TRUSTED_ORIGINS.append(
             custom_origin
         )
