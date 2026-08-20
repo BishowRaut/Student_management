@@ -1,0 +1,309 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Teachers | Student Management System</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <a href="{% url 'home' %}">
+                Student Management System
+            </a>
+
+        </div>
+
+
+        <div class="nav-links">
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <a href="{% url 'student_list' %}">
+                Students
+            </a>
+
+            <a href="{% url 'course_list' %}">
+                Courses
+            </a>
+
+            <a href="{% url 'department_list' %}">
+                Departments
+            </a>
+
+            <a href="{% url 'teacher_list' %}">
+                Teachers
+            </a>
+
+
+            <span class="welcome-user">
+
+                Signed in as
+
+                <strong>
+                    {{ request.user.username }}
+                </strong>
+
+            </span>
+
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-btn"
+                >
+                    Logout
+                </button>
+
+            </form>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="page-container">
+
+
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+                    Teachers
+                </h1>
+
+                <p>
+                    View teaching staff, qualifications,
+                    departments and assigned courses.
+                </p>
+
+            </div>
+
+
+            <span class="btn btn-primary">
+
+                {{ total_teachers }}
+
+                {% if total_teachers == 1 %}
+                    Teacher
+                {% else %}
+                    Teachers
+                {% endif %}
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             TEACHER TABLE
+        ================================================== -->
+
+        <div class="table-card">
+
+            <table class="student-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            Teacher Name
+                        </th>
+
+                        <th>
+                            Qualification
+                        </th>
+
+                        <th>
+                            Department
+                        </th>
+
+                        <th>
+                            Courses
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for teacher in teachers %}
+
+                    <tr>
+
+                        <!-- Number -->
+
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+
+
+                        <!-- Teacher Name -->
+
+                        <td>
+
+                            <strong>
+                                {{ teacher.name }}
+                            </strong>
+
+                        </td>
+
+
+                        <!-- Qualification -->
+
+                        <td>
+
+                            {% if teacher.qualification %}
+
+                                {{ teacher.qualification }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Department -->
+
+                        <td>
+                            {{ teacher.department.name }}
+                        </td>
+
+
+                        <!-- Course Count -->
+
+                        <td>
+
+                            {{ teacher.courses.count }}
+
+                            {% if teacher.courses.count == 1 %}
+                                Course
+                            {% else %}
+                                Courses
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <!-- =================================================
+                         EMPTY STATE
+                    ================================================== -->
+
+                    <tr>
+
+                        <td colspan="5">
+
+                            <div class="empty-state">
+
+                                <h2>
+                                    No Teachers Found
+                                </h2>
+
+                                <p>
+                                    There are currently no teachers
+                                    registered in the system.
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             BACK TO DASHBOARD
+        ================================================== -->
+
+        <div class="back-link">
+
+            <a href="{% url 'home' %}">
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <p>
+            Student Management System &copy; 2026
+        </p>
+
+    </footer>
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+
+</html>

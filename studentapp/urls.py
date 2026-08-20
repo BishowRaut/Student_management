@@ -71,4 +71,40 @@ urlpatterns = [
         name="delete_student"
     ),
 
+
+    # =====================================================
+    # COURSE MANAGEMENT
+    # =====================================================
+
+    # View all Courses
+    path(
+        "courses/",
+        views.course_list,
+        name="course_list"
+    ),
+
+
+    # =====================================================
+    # DEPARTMENT MANAGEMENT
+    # =====================================================
+
+    # View all Departments
+    path(
+        "departments/",
+        views.department_list,
+        name="department_list"
+    ),
+
+
+    # =====================================================
+    # TEACHER MANAGEMENT
+    # =====================================================
+
+    # View all Teachers
+    path(
+        "teachers/",
+        views.teacher_list,
+        name="teacher_list"
+    ),
+
 ]

@@ -1,166 +1,177 @@
-{% extends "studentapp/home.html" %}
+{% load static %}
 
-{% block title %}
-Students | Student Management System
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block content %}
+    <title>Students</title>
 
-<div class="page-header">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
 
-    <h1>
-        Students
-    </h1>
+<body>
 
-    <a
-        href="{% url 'add_student' %}"
-        class="btn btn-primary"
-    >
-        + Add Student
-    </a>
+    <!-- Navbar -->
+    <nav class="navbar">
 
-</div>
+        <div class="logo">
+            <a href="{% url 'home' %}">Student Management</a>
+        </div>
 
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'student_list' %}">Students</a>
+            <a href="{% url 'add_student' %}">Add Student</a>
+        </div>
 
-<div class="stats">
-
-    <h3>
-        Total Students
-    </h3>
-
-    <p>
-        {{ total_students }}
-    </p>
-
-</div>
+    </nav>
 
 
-<div class="search-box">
+    <!-- Student Page -->
+    <div class="page-container">
 
-    <form method="GET">
+        <!-- Page Header -->
+        <div class="page-header">
 
-        <input
-            type="text"
-            name="search"
-            placeholder="Search by name or email..."
-            value="{{ search }}"
-        >
+            <div>
+                <h1>Students</h1>
+                <p>Manage all student records</p>
+            </div>
 
-        <button
-            type="submit"
-            class="btn btn-primary"
-        >
-            Search
-        </button>
+            <a href="{% url 'add_student' %}" class="btn btn-primary">
+                + Add Student
+            </a>
 
-        {% if search %}
-
-        <a
-            href="{% url 'student_list' %}"
-            class="btn btn-secondary"
-        >
-            Clear
-        </a>
-
-        {% endif %}
-
-    </form>
-
-</div>
+        </div>
 
 
-<div class="card">
+        <!-- Search -->
+        <form method="GET" class="search-container">
 
-    {% if students %}
+            <input
+                type="text"
+                name="search"
+                placeholder="Search student..."
+                value="{{ request.GET.search }}"
+            >
 
-    <table>
+            <button type="submit" class="search-btn">
+                Search
+            </button>
 
-        <thead>
-
-            <tr>
-
-                <th>ID</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Created</th>
-                <th>Actions</th>
-
-            </tr>
-
-        </thead>
+        </form>
 
 
-        <tbody>
+        <!-- Student Table -->
+        <div class="table-card">
 
-            {% for student in students %}
+            <table class="student-table">
 
-            <tr>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
 
-                <td>
-                    {{ student.id }}
-                </td>
+                <tbody>
 
-                <td>
-                    {{ student.name }}
-                </td>
+                    {% for student in students %}
 
-                <td>
-                    {{ student.age }}
-                </td>
+                    <tr>
 
-                <td>
-                    {{ student.email }}
-                </td>
+                        <td>
+                            {{ student.id }}
+                        </td>
 
-                <td>
-                    {{ student.address }}
-                </td>
+                        <td>
+                            {{ student.name }}
+                        </td>
 
-                <td>
-                    {{ student.created_at|date:"M d, Y" }}
-                </td>
+                        <td>
+                            {{ student.age }}
+                        </td>
 
-                <td>
+                        <td>
+                            {{ student.email }}
+                        </td>
 
-                    <div class="actions">
+                        <td>
+                            {{ student.address }}
+                        </td>
 
-                        <a
-                            href="{% url 'edit_student' student.id %}"
-                            class="btn btn-warning"
-                        >
-                            Edit
-                        </a>
+                        <td>
+                            {{ student.created_at|date:"M d, Y" }}
+                        </td>
 
-                        <a
-                            href="{% url 'delete_student' student.id %}"
-                            class="btn btn-danger"
-                        >
-                            Delete
-                        </a>
+                        <td>
 
-                    </div>
+                            <div class="action-buttons">
 
-                </td>
+                                <a
+                                    href="{% url 'edit_student' student.id %}"
+                                    class="btn btn-warning"
+                                >
+                                    Edit
+                                </a>
 
-            </tr>
+                                <a
+                                    href="{% url 'delete_student' student.id %}"
+                                    class="btn btn-danger"
+                                >
+                                    Delete
+                                </a>
 
-            {% endfor %}
+                            </div>
 
-        </tbody>
+                        </td>
 
-    </table>
+                    </tr>
 
-    {% else %}
+                    {% empty %}
 
-    <p>
-        No students found.
-    </p>
+                    <tr>
+                        <td colspan="7">
 
-    {% endif %}
+                            <div class="empty-state">
 
-</div>
+                                <h2>No Students Found</h2>
 
-{% endblock %}
+                                <p>
+                                    There are no student records available.
+                                </p>
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            Student Management System
+        </p>
+    </footer>
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+
+</html>

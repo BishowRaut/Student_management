@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Student
+from .models import Student, Course, Department, Teacher
 
 
 # =========================================================
@@ -12,10 +12,17 @@ from .models import Student
 
 @login_required
 def home(request):
+
     total_students = Student.objects.count()
+    total_courses = Course.objects.count()
+    total_departments = Department.objects.count()
+    total_teachers = Teacher.objects.count()
 
     context = {
         "total_students": total_students,
+        "total_courses": total_courses,
+        "total_departments": total_departments,
+        "total_teachers": total_teachers,
     }
 
     return render(
@@ -26,11 +33,80 @@ def home(request):
 
 
 # =========================================================
+# COURSE LIST
+# =========================================================
+
+@login_required
+def course_list(request):
+
+    courses = Course.objects.select_related(
+        "department",
+        "teacher"
+    ).all()
+
+    context = {
+        "courses": courses,
+        "total_courses": courses.count(),
+    }
+
+    return render(
+        request,
+        "studentapp/courses.html",
+        context
+    )
+
+
+# =========================================================
+# DEPARTMENT LIST
+# =========================================================
+
+@login_required
+def department_list(request):
+
+    departments = Department.objects.all()
+
+    context = {
+        "departments": departments,
+        "total_departments": departments.count(),
+    }
+
+    return render(
+        request,
+        "studentapp/departments.html",
+        context
+    )
+
+
+# =========================================================
+# TEACHER LIST
+# =========================================================
+
+@login_required
+def teacher_list(request):
+
+    teachers = Teacher.objects.select_related(
+        "department"
+    ).all()
+
+    context = {
+        "teachers": teachers,
+        "total_teachers": teachers.count(),
+    }
+
+    return render(
+        request,
+        "studentapp/teachers.html",
+        context
+    )
+
+
+# =========================================================
 # REGISTER
 # =========================================================
 
 def register(request):
 
+    # If already logged in, go to home
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -39,6 +115,7 @@ def register(request):
         form = UserCreationForm(request.POST)
 
         if form.is_valid():
+
             user = form.save()
 
             # Automatically login after registration
@@ -47,6 +124,7 @@ def register(request):
             return redirect("home")
 
     else:
+
         form = UserCreationForm()
 
     return render(
@@ -64,6 +142,7 @@ def register(request):
 
 def user_login(request):
 
+    # If already logged in, go to home
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -83,6 +162,7 @@ def user_login(request):
             return redirect("home")
 
     else:
+
         form = AuthenticationForm()
 
     return render(

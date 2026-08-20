@@ -7,9 +7,12 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>Home | Student Management System</title>
+    <title>Dashboard | Student Management System</title>
 
     <link
         rel="stylesheet"
@@ -18,13 +21,12 @@
 
 </head>
 
-
 <body>
 
 
-    <!-- ==============================
-         NAVIGATION BAR
-    =============================== -->
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
 
     <nav class="navbar">
 
@@ -39,7 +41,7 @@
 
         <div class="nav-links">
 
-            <a href="{% url 'home' %}">
+            <a href="{% url 'home' %}" class="active">
                 Home
             </a>
 
@@ -47,185 +49,225 @@
                 Students
             </a>
 
-            <a href="{% url 'add_student' %}">
-                Add Student
+            <a href="{% url 'course_list' %}">
+                Courses
+            </a>
+
+            <a href="{% url 'department_list' %}">
+                Departments
+            </a>
+
+            <a href="{% url 'teacher_list' %}">
+                Teachers
             </a>
 
 
-            {% if user.is_authenticated %}
+            <span class="welcome-user">
 
-                <span class="welcome-user">
-                    Welcome, {{ user.username }}
-                </span>
+                Signed in as
+
+                <strong>
+                    {{ request.user.username }}
+                </strong>
+
+            </span>
 
 
-                <!-- Logout must use POST -->
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form"
+            >
 
-                <form
-                    method="POST"
-                    action="{% url 'logout' %}"
-                    class="logout-form"
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-btn"
                 >
+                    Logout
+                </button>
 
-                    {% csrf_token %}
-
-                    <button
-                        type="submit"
-                        class="logout-btn"
-                    >
-                        Logout
-                    </button>
-
-                </form>
-
-            {% endif %}
+            </form>
 
         </div>
 
     </nav>
 
 
-
-    <!-- ==============================
-         MAIN CONTENT
-    =============================== -->
+    <!-- =====================================================
+         MAIN DASHBOARD
+    ====================================================== -->
 
     <main class="home-container">
 
 
-        <!-- Welcome Section -->
+        <!-- =================================================
+             WELCOME
+        ================================================== -->
 
-        <section class="welcome-section">
+        <section class="hero-section">
 
             <h1>
-                Welcome to Student Management System
+
+                Welcome back,
+
+                <span>
+                    {{ request.user.username }}
+                </span>
+
             </h1>
 
-            {% if user.is_authenticated %}
-
-                <p>
-                    Hello, <strong>{{ user.username }}</strong>!
-                    Welcome back.
-                </p>
-
-            {% else %}
-
-                <p>
-                    Please login to manage students.
-                </p>
-
-            {% endif %}
+            <p>
+                Manage students, courses, departments and
+                academic information from one centralized dashboard.
+            </p>
 
         </section>
 
 
+        <!-- =================================================
+             DASHBOARD STATISTICS
+        ================================================== -->
 
-        <!-- ==============================
-             DASHBOARD CARDS
-        =============================== -->
-
-        <section class="dashboard-cards">
+        <section class="dashboard-grid">
 
 
-            <!-- Total Students -->
+            <!-- =================================================
+                 STUDENTS CARD
+            ================================================== -->
 
-            <div class="dashboard-card">
+            <a
+                href="{% url 'student_list' %}"
+                class="dashboard-card dashboard-card-link"
+            >
 
                 <h3>
                     Total Students
                 </h3>
 
-                <p class="dashboard-number">
-                    {{ total_students|default:"0" }}
-                </p>
-
-                <a
-                    href="{% url 'student_list' %}"
-                    class="btn btn-primary"
-                >
-                    View Students
-                </a>
-
-            </div>
-
-
-            <!-- Add Student -->
-
-            <div class="dashboard-card">
-
-                <h3>
-                    Add Student
-                </h3>
+                <div class="number">
+                    {{ total_students }}
+                </div>
 
                 <p>
-                    Add a new student to the system.
+                    Students currently registered
                 </p>
 
-                <a
-                    href="{% url 'add_student' %}"
-                    class="btn btn-primary"
-                >
-                    Add Student
-                </a>
+                <span class="card-link-text">
+                    View student details →
+                </span>
 
-            </div>
+            </a>
 
 
-            <!-- Manage Students -->
+            <!-- =================================================
+                 COURSES CARD
+            ================================================== -->
 
-            <div class="dashboard-card">
+            <a
+                href="{% url 'course_list' %}"
+                class="dashboard-card dashboard-card-link"
+            >
 
                 <h3>
-                    Manage Students
+                    Courses
                 </h3>
 
+                <div class="number">
+                    {{ total_courses }}
+                </div>
+
                 <p>
-                    View, edit, search, and delete student records.
+                    Courses available
                 </p>
 
-                <a
-                    href="{% url 'student_list' %}"
-                    class="btn btn-primary"
-                >
-                    Manage Students
-                </a>
+                <span class="card-link-text">
+                    View course details →
+                </span>
 
-            </div>
+            </a>
+
+
+            <!-- =================================================
+                 DEPARTMENTS CARD
+            ================================================== -->
+
+            <a
+                href="{% url 'department_list' %}"
+                class="dashboard-card dashboard-card-link"
+            >
+
+                <h3>
+                    Departments
+                </h3>
+
+                <div class="number">
+                    {{ total_departments }}
+                </div>
+
+                <p>
+                    Academic departments
+                </p>
+
+                <span class="card-link-text">
+                    View department details →
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 TEACHERS CARD
+            ================================================== -->
+
+            <a
+                href="{% url 'teacher_list' %}"
+                class="dashboard-card dashboard-card-link"
+            >
+
+                <h3>
+                    Teachers
+                </h3>
+
+                <div class="number">
+                    {{ total_teachers }}
+                </div>
+
+                <p>
+                    Teaching staff
+                </p>
+
+                <span class="card-link-text">
+                    View teacher details →
+                </span>
+
+            </a>
 
 
         </section>
 
 
-
-        <!-- ==============================
+        <!-- =================================================
              QUICK ACTIONS
-        =============================== -->
+        ================================================== -->
 
         <section class="quick-actions">
 
-            <h2>
-                Quick Actions
-            </h2>
+            <a
+                href="{% url 'add_student' %}"
+                class="quick-action"
+            >
+                + Add Student
+            </a>
 
 
-            <div class="quick-action-buttons">
-
-                <a
-                    href="{% url 'student_list' %}"
-                    class="btn btn-primary"
-                >
-                    View Students
-                </a>
-
-
-                <a
-                    href="{% url 'add_student' %}"
-                    class="btn btn-primary"
-                >
-                    Add New Student
-                </a>
-
-            </div>
+            <a
+                href="{% url 'student_list' %}"
+                class="quick-action secondary"
+            >
+                View Students
+            </a>
 
         </section>
 
@@ -233,20 +275,22 @@
     </main>
 
 
-
-    <!-- ==============================
+    <!-- =====================================================
          FOOTER
-    =============================== -->
+    ====================================================== -->
 
     <footer class="footer">
 
         <p>
-            &copy; 2026 Student Management System.
-            All rights reserved.
+            Student Management System &copy; 2026
         </p>
 
     </footer>
 
+
+<!-- JavaScript -->
+
+<script src="{% static 'js/script.js' %}"></script>
 
 </body>
 

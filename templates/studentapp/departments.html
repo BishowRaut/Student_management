@@ -1,0 +1,296 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Departments | Student Management System</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <a href="{% url 'home' %}">
+                Student Management System
+            </a>
+
+        </div>
+
+
+        <div class="nav-links">
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <a href="{% url 'student_list' %}">
+                Students
+            </a>
+
+            <a href="{% url 'course_list' %}">
+                Courses
+            </a>
+
+            <a href="{% url 'department_list' %}">
+                Departments
+            </a>
+
+            <a href="{% url 'teacher_list' %}">
+                Teachers
+            </a>
+
+
+            <span class="welcome-user">
+
+                Signed in as
+
+                <strong>
+                    {{ request.user.username }}
+                </strong>
+
+            </span>
+
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-btn"
+                >
+                    Logout
+                </button>
+
+            </form>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="page-container">
+
+
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+                    Departments
+                </h1>
+
+                <p>
+                    View all academic departments,
+                    teachers and courses.
+                </p>
+
+            </div>
+
+
+            <span class="btn btn-primary">
+
+                {{ total_departments }}
+
+                {% if total_departments == 1 %}
+                    Department
+                {% else %}
+                    Departments
+                {% endif %}
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             DEPARTMENT TABLE
+        ================================================== -->
+
+        <div class="table-card">
+
+            <table class="student-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            Department Name
+                        </th>
+
+                        <th>
+                            Teachers
+                        </th>
+
+                        <th>
+                            Courses
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for department in departments %}
+
+                    <tr>
+
+                        <!-- Number -->
+
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+
+
+                        <!-- Department -->
+
+                        <td>
+
+                            <strong>
+                                {{ department.name }}
+                            </strong>
+
+                        </td>
+
+
+                        <!-- Teacher Count -->
+
+                        <td>
+
+                            {{ department.teachers.count }}
+
+                            {% if department.teachers.count == 1 %}
+                                Teacher
+                            {% else %}
+                                Teachers
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Course Count -->
+
+                        <td>
+
+                            {{ department.courses.count }}
+
+                            {% if department.courses.count == 1 %}
+                                Course
+                            {% else %}
+                                Courses
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <!-- =================================================
+                         EMPTY STATE
+                    ================================================== -->
+
+                    <tr>
+
+                        <td colspan="4">
+
+                            <div class="empty-state">
+
+                                <h2>
+                                    No Departments Found
+                                </h2>
+
+                                <p>
+                                    There are currently no academic
+                                    departments in the system.
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             BACK TO DASHBOARD
+        ================================================== -->
+
+        <div class="back-link">
+
+            <a href="{% url 'home' %}">
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <p>
+            Student Management System &copy; 2026
+        </p>
+
+    </footer>
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+
+</html>
