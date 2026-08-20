@@ -31,43 +31,53 @@ DEBUG = os.environ.get(
 
 
 # =========================================================
-# VERCEL
+# VERCEL / CUSTOM DOMAIN
 # =========================================================
 
 VERCEL_URL = os.environ.get("VERCEL_URL")
-
 CUSTOM_DOMAIN = os.environ.get("CUSTOM_DOMAIN")
 
 
 # =========================================================
 # ALLOWED HOSTS
 # =========================================================
-#
-# Django uses this to decide which Host headers are allowed.
-# ".vercel.app" allows your Vercel deployment subdomains.
-#
-# Example:
-# student-management-three-alpha.vercel.app
-#
-# =========================================================
 
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "student-management-three-alpha.vercel.app",
     ".vercel.app",
 ]
 
 
-# Add the Vercel deployment hostname if available.
+# Add Vercel hostname if Vercel provides it
 
 if VERCEL_URL:
-    ALLOWED_HOSTS.append(VERCEL_URL)
+    VERCEL_HOST = VERCEL_URL.replace(
+        "https://",
+        ""
+    ).replace(
+        "http://",
+        ""
+    ).rstrip("/")
+
+    if VERCEL_HOST not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(VERCEL_HOST)
 
 
-# Add custom domain if configured.
+# Add custom domain if configured
 
 if CUSTOM_DOMAIN:
-    ALLOWED_HOSTS.append(CUSTOM_DOMAIN)
+    CUSTOM_HOST = CUSTOM_DOMAIN.replace(
+        "https://",
+        ""
+    ).replace(
+        "http://",
+        ""
+    ).rstrip("/")
+
+    if CUSTOM_HOST not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(CUSTOM_HOST)
 
 
 # =========================================================
@@ -256,9 +266,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = [
-
     BASE_DIR / "static",
-
 ]
 
 
@@ -293,25 +301,39 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CSRF TRUSTED ORIGINS
 # =========================================================
 
-CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = [
+    "https://student-management-three-alpha.vercel.app",
+]
 
 
-# Vercel deployment domain
+# Add Vercel origin if available
 
 if VERCEL_URL:
 
-    CSRF_TRUSTED_ORIGINS.append(
-        f"https://{VERCEL_URL}"
-    )
+    VERCEL_ORIGIN = VERCEL_URL
+
+    if not VERCEL_ORIGIN.startswith("http://") and not VERCEL_ORIGIN.startswith("https://"):
+        VERCEL_ORIGIN = f"https://{VERCEL_ORIGIN}"
+
+    VERCEL_ORIGIN = VERCEL_ORIGIN.rstrip("/")
+
+    if VERCEL_ORIGIN not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(VERCEL_ORIGIN)
 
 
-# Custom production domain
+# Add custom domain if configured
 
 if CUSTOM_DOMAIN:
 
-    CSRF_TRUSTED_ORIGINS.append(
-        f"https://{CUSTOM_DOMAIN}"
-    )
+    CUSTOM_ORIGIN = CUSTOM_DOMAIN
+
+    if not CUSTOM_ORIGIN.startswith("http://") and not CUSTOM_ORIGIN.startswith("https://"):
+        CUSTOM_ORIGIN = f"https://{CUSTOM_ORIGIN}"
+
+    CUSTOM_ORIGIN = CUSTOM_ORIGIN.rstrip("/")
+
+    if CUSTOM_ORIGIN not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(CUSTOM_ORIGIN)
 
 
 # =========================================================
