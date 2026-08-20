@@ -7,6 +7,8 @@ Student Management System
 import os
 from pathlib import Path
 
+import dj_database_url
+
 
 # =========================================================
 # BASE DIRECTORY
@@ -24,9 +26,10 @@ SECRET_KEY = os.environ.get(
     "django-insecure-development-only-change-this-key",
 )
 
-DEBUG = (
-    os.environ.get("DEBUG", "False").lower() == "true"
-)
+DEBUG = os.environ.get(
+    "DEBUG",
+    "False",
+).lower() == "true"
 
 
 # =========================================================
@@ -76,6 +79,7 @@ if CUSTOM_DOMAIN:
 # =========================================================
 
 INSTALLED_APPS = [
+    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -83,6 +87,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    # Student Management System
     "studentapp",
 ]
 
@@ -138,12 +143,10 @@ TEMPLATES = [
                     "django.template.context_processors."
                     "request"
                 ),
-
                 (
                     "django.contrib.auth."
                     "context_processors.auth"
                 ),
-
                 (
                     "django.contrib.messages."
                     "context_processors.messages"
@@ -163,47 +166,26 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # =========================================================
 # DATABASE
-# =========================================================
-#
-# If DATABASE_URL exists:
-#     Use PostgreSQL / Neon
-#
-# If DATABASE_URL does not exist:
-#     Use SQLite locally
-#
+# NEON POSTGRESQL
 # =========================================================
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL is not configured. "
+        "Add your Neon PostgreSQL connection string "
+        "to Vercel Environment Variables."
+    )
 
-if DATABASE_URL:
 
-    # -----------------------------------------------------
-    # POSTGRESQL / NEON
-    # -----------------------------------------------------
-
-    import dj_database_url
-
-    DATABASES = {
-        "default": dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-
-else:
-
-    # -----------------------------------------------------
-    # LOCAL SQLITE
-    # -----------------------------------------------------
-
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+DATABASES = {
+    "default": dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
 
 
 # =========================================================
@@ -217,21 +199,18 @@ AUTH_PASSWORD_VALIDATORS = [
             "UserAttributeSimilarityValidator"
         ),
     },
-
     {
         "NAME": (
             "django.contrib.auth.password_validation."
             "MinimumLengthValidator"
         ),
     },
-
     {
         "NAME": (
             "django.contrib.auth.password_validation."
             "CommonPasswordValidator"
         ),
     },
-
     {
         "NAME": (
             "django.contrib.auth.password_validation."
@@ -304,16 +283,13 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 if VERCEL_URL:
-
     vercel_origin = VERCEL_URL.strip()
 
     if not (
         vercel_origin.startswith("http://")
         or vercel_origin.startswith("https://")
     ):
-        vercel_origin = (
-            f"https://{vercel_origin}"
-        )
+        vercel_origin = f"https://{vercel_origin}"
 
     vercel_origin = vercel_origin.rstrip("/")
 
@@ -324,16 +300,13 @@ if VERCEL_URL:
 
 
 if CUSTOM_DOMAIN:
-
     custom_origin = CUSTOM_DOMAIN.strip()
 
     if not (
         custom_origin.startswith("http://")
         or custom_origin.startswith("https://")
     ):
-        custom_origin = (
-            f"https://{custom_origin}"
-        )
+        custom_origin = f"https://{custom_origin}"
 
     custom_origin = custom_origin.rstrip("/")
 
