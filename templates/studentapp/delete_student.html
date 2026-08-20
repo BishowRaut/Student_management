@@ -1,0 +1,65 @@
+{% extends "studentapp/home.html" %}
+
+{% block title %}
+Delete Student | Student Management System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <h1>
+        Delete Student
+    </h1>
+
+</div>
+
+
+<div class="card">
+
+    <div class="warning">
+
+        <h3>
+            Are you sure?
+        </h3>
+
+        <p>
+            You are about to delete
+            <strong>{{ student.name }}</strong>.
+        </p>
+
+        <p>
+            This action cannot be undone.
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+            >
+                Yes, Delete
+            </button>
+
+            <a
+                href="{% url 'student_list' %}"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

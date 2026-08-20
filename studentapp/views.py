@@ -3,6 +3,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .models import Student
 
 
+def home(request):
+    return render(request, "studentapp/home.html")
+
+
 def student_list(request):
     search = request.GET.get("search", "")
 
@@ -21,7 +25,11 @@ def student_list(request):
         "total_students": Student.objects.count(),
     }
 
-    return render(request, "studentapp/student_list.html", context)
+    return render(
+        request,
+        "studentapp/students.html",
+        context
+    )
 
 
 def add_student(request):
@@ -59,7 +67,7 @@ def edit_student(request, student_id):
     return render(
         request,
         "studentapp/edit_student.html",
-        {"student": student},
+        {"student": student}
     )
 
 
@@ -73,5 +81,5 @@ def delete_student(request, student_id):
     return render(
         request,
         "studentapp/delete_student.html",
-        {"student": student},
+        {"student": student}
     )

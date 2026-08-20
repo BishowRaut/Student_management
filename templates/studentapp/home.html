@@ -1,0 +1,134 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        Student Management System
+        {% endblock %}
+    </title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+
+    <nav class="navbar">
+
+        <h2>
+            Student Management System
+        </h2>
+
+        <div class="nav-links">
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <a href="{% url 'student_list' %}">
+                Students
+            </a>
+
+            <a href="{% url 'add_student' %}">
+                Add Student
+            </a>
+
+            <a href="/admin/">
+                Admin
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Main Content -->
+
+    <main class="container">
+
+        {% block content %}
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+                    Welcome to Student Management System
+                </h1>
+
+                <p>
+                    Manage student records easily and efficiently.
+                </p>
+
+            </div>
+
+            <a
+                href="{% url 'add_student' %}"
+                class="btn btn-primary"
+            >
+                + Add Student
+            </a>
+
+        </div>
+
+
+        <div class="stats">
+
+            <h3>
+                Student Management
+            </h3>
+
+            <p>
+                Manage your student records from one place.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>
+                Welcome
+            </h2>
+
+            <p>
+                Use the navigation menu to manage students.
+            </p>
+
+            <div class="form-actions">
+
+                <a
+                    href="{% url 'student_list' %}"
+                    class="btn btn-primary"
+                >
+                    View Students
+                </a>
+
+                <a
+                    href="{% url 'add_student' %}"
+                    class="btn btn-success"
+                >
+                    Add Student
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endblock %}
+
+    </main>
+
+</body>
+
+</html>
